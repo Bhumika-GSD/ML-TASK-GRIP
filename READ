@@ -1,0 +1,249 @@
+GRIP - THE SPARKS FOUNDATION
+Predicatiion using Supervised ML
+Linear Regression with Python Scikit Learn
+
+In this section we will see how the Python Scikit-Learn library for machine learning can be used to implement regression functions. We will start with simple linear regression involving two variables.
+Author: Bhumika
+Problem Statement
+Task-1
+
+In this regression task we will Predict the percentage of an student based on the no. of study hours.This is a simple linear regression task as it involves just 2 variables.
+To predict:
+
+what will be predicated score if a student for 9.25 hrs/day?
+
+# Importing all libraries required in this notebook
+
+import pandas as pd
+
+import numpy as np  
+
+​
+
+import matplotlib.pyplot as plt  
+
+%matplotlib inline
+
+​
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.linear_model import LinearRegression
+
+print('Libraries imported Sucessfully')
+
+​
+
+Libraries imported Sucessfully
+
+# Reading data from csv file and visualization
+
+url = "http://bit.ly/w-data"
+
+df = pd.read_csv(url)
+
+print("Data imported successfully")
+
+​
+
+Data imported successfully
+
+Data Exploration
+
+df.head()
+
+	Hours 	Scores
+0 	2.5 	21
+1 	5.1 	47
+2 	3.2 	27
+3 	8.5 	75
+4 	3.5 	30
+
+df.tail()
+
+	Hours 	Scores
+20 	2.7 	30
+21 	4.8 	54
+22 	3.8 	35
+23 	6.9 	76
+24 	7.8 	86
+
+# Checking for any missing value
+
+df.isnull().sum()
+
+Hours     0
+Scores    0
+dtype: int64
+
+df.describe()
+
+	Hours 	Scores
+count 	25.000000 	25.000000
+mean 	5.012000 	51.480000
+std 	2.525094 	25.286887
+min 	1.100000 	17.000000
+25% 	2.700000 	30.000000
+50% 	4.800000 	47.000000
+75% 	7.400000 	75.000000
+max 	9.200000 	95.000000
+
+df.info()
+
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 25 entries, 0 to 24
+Data columns (total 2 columns):
+Hours     25 non-null float64
+Scores    25 non-null int64
+dtypes: float64(1), int64(1)
+memory usage: 528.0 bytes
+
+#Checking the coreelation between hours and scores
+
+df.corr()
+
+	Hours 	Scores
+Hours 	1.000000 	0.976191
+Scores 	0.976191 	1.000000
+Data Visualization
+
+#line plot
+
+plt.style.use('ggplot')
+
+df.plot(kind='line')
+
+plt.title('hours vs percentge')
+
+plt.xlabel('Hours studied')
+
+plt.ylabel('percentage score')
+
+plt.show()
+
+​
+
+#area plot
+
+xmin=min(df.Hours)
+
+xmax=max(df.Hours)
+
+df.plot(kind='area',alpha=0.8,stacked=True,figsize=(10,5),xlim=(xmin,xmax))
+
+plt.title('hours vs score',size=15)
+
+plt.xlabel('Hours',size=15)
+
+plt.ylabel('score',size=15)
+
+plt.show()
+
+​
+
+#scatter plot
+
+df.plot(kind='scatter',x='Hours',y='Scores',color='r',figsize=(8,5))
+
+plt.title('hours vs percentge')
+
+plt.xlabel('Hours studied')
+
+plt.ylabel('percentage score')
+
+plt.show()
+
+​
+
+Modeling the Data
+
+X=np.asanyarray(df[['Hours']])
+
+y=np.asanyarray(df['Scores'])
+
+​
+
+X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.2, random_state=0) 
+
+​
+
+regressor = LinearRegression()  
+
+regressor.fit(X_train, y_train) 
+
+​
+
+print('Trainig completed\n')
+
+print('Coefficiant:',regressor.coef_)
+
+print('Intercept:',regressor.intercept_)
+
+​
+
+Trainig completed
+
+Coefficiant: [9.91065648]
+Intercept: 2.018160041434683
+
+#fit line over the data in single linear regression
+
+​
+
+df.plot(kind='scatter',x='Hours',y='Scores',color='r',figsize=(10,5))
+
+plt.plot(X_train,regressor.coef_[0]*X_train+ regressor.intercept_,color='b')
+
+plt.title('hours vs percentge')
+
+plt.xlabel('Hours studied')
+
+plt.ylabel('percentage score')
+
+plt.show()
+
+​
+
+from sklearn import metrics
+
+from sklearn.metrics import r2_score
+
+y_pred=regressor.predict(X_test)
+
+print('Mean absloute errror: {}'.format(metrics.mean_absolute_error(y_pred,y_test)))
+
+print("R2-score: "%r2_score(y_pred,y_test))
+
+​
+
+Mean absloute errror: 4.183859899002975
+R2-score: 
+
+df2 = pd.DataFrame({'Actual':y_test,'Predicated':y_pred})
+
+df2
+
+​
+
+	Actual 	Predicated
+0 	20 	16.884145
+1 	27 	33.732261
+2 	69 	75.357018
+3 	30 	26.794801
+4 	62 	60.491033
+predict the Score with the single input value
+
+hours=9.25
+
+predicated_score=regressor.predict([[hours]])
+
+print(f'no. of hours ={hours}')
+
+print(f'predicated Score = {predicated_score[0]}')
+
+      
+
+no. of hours =9.25
+predicated Score = 93.69173248737538
+
+Predicated Score = 93.69173248737538¶
